@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lefthand.activiti.dao.mapper.ProcessInstanceMapper">
+    <resultMap id="ResultMap" type="com.lefthand.activiti.domain.MyProcessInstance">
+        <result column="ID_"                    property="id"/>
+        <result column="PROC_INST_ID_"          property="ProcessInstanceId"/>
+        <result column="BUSINESS_KEY_"          property="BusinessKey"/>
+        <result column="PROC_DEF_ID_"           property="processDefinitionId"/>
+        <result column="ACT_ID_"                property="ActivityId"/>
+        <result column="SUSPENSION_STATE_"      property="Suspended"/>
+        <association property="processDefinition" javaType="com.lefthand.activiti.domain.MyProcessDefinition">
+            <result property="key" column="KEY_"/>
+            <result property="version" column="VERSION_"/>
+            <result property="deploymentId" column="DEPLOYMENT_ID_"/>
+        </association>
+    </resultMap>
+
+    <select id="findAllProcessInstance" resultMap="ResultMap">
+        select * from (
+        select t1.KEY_,t1.VERSION_,t1.DEPLOYMENT_ID_,t.* ,rownum rn
+        from act_ru_execution t,act_re_procdef t1
+        where t.PROC_DEF_ID_=t1.id_
+        <include refid="condition-part" />
+        and rownum <![CDATA[<=]]> #{page.offset} + #{page.size}
+        ORDER BY t.PROC_INST_ID_ asc)s
+        where s.rn <![CDATA[>]]>  #{page.offset}
+    </select>
+
+    <select id="queryProcessInstanceTotal" resultType="java.lang.Long">
+        SELECT COUNT(t.id_) from act_ru_execution t,act_re_procdef t1
+        where t.PROC_DEF_ID_=t1.id_
+        <include refid="condition-part" />
+    </select>
+
+    <sql id="condition-part">
+        <if test="terms != null">
+            <if test="terms.inId != null and terms.inId != ''">
+                and t.PROC_INST_ID_ = #{terms.inId}
+            </if>
+        </if>
+    </sql>
+
+</mapper>

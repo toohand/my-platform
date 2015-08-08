@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    <description>应用常量配置</description>
+    <!-- demo用到   begin-->
+    <util:map id="sexMap">
+        <entry key="0" value="女"/>
+        <entry key="1" value="男"/>
+    </util:map>
+    <util:map id="hobbyMap">
+        <entry key="0" value="篮球"/>
+        <entry key="1" value="足球"/>
+    </util:map>
+    <!-- end -->
+    <!-- portal-->
+    <util:map id="enabledMap">
+        <entry key="0" value="停用"/>
+        <entry key="1" value="启用"/>
+    </util:map>
+   <!--工作流Demo -->
+    <util:map id="leaveType">
+        <entry key="1" value="病假"/>
+        <entry key="2" value="事假"/>
+        <entry key="3" value="年假"/>
+        <entry key="4" value="陪产假"/>
+        <entry key="5" value="婚假"/>
+        <entry key="6" value="其它"/>
+    </util:map>
+
+    <!--申请状态,0申请中，1审批中，2通过，3，不通过。-->
+    <util:map id="leaveState">
+        <entry key="1" value="申请中"/>
+        <entry key="2" value="审批中"/>
+        <entry key="3" value="通过"/>
+        <entry key="4" value="不通过"/>
+    </util:map>
+    <!--end -->
+    <!--数据字典分类   1000~1999系统保留配置，不能删除和修改名称 ；2000~9999 用户配置 -->
+    <util:map id="dtyType">
+        <entry key="1001" value="发送短信配置"/>
+        <entry key="2001" value="事件等级"/>
+        <entry key="2002" value="流程类型"/>
+        <entry key="2003" value="班级"/>
+    </util:map>
+    <util:list id = "actCategorys">
+        <value>http://www.activiti.org/test</value>
+        <value>http://www.ssim.com</value>
+    </util:list>
+
+</beans>

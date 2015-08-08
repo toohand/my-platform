@@ -1,0 +1,16 @@
+package com.huge.demo.service;
+
+import com.huge.base.service.BaseServiceable;
+import com.huge.demo.domain.BdCodeDemo;
+
+/**
+* Title: 代码生成器Demo 业务接口类
+* Description: 代码生成器Demo
+* Company: hugeinfo
+* author: hp
+* time:2015-06-25 14:49:26
+* version 1.0
+*/
+public interface BdCodeDemoService extends BaseServiceable<BdCodeDemo> {
+
+}

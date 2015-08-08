@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lefthand.activiti.dao.mapper.HisTaskMapper">
+    <resultMap id="ResultMap" type="com.lefthand.activiti.domain.HisTask">
+        <result column="ID_"                    property="id"/>
+        <result column="PROC_DEF_ID_"          property="procdefId"/>
+        <result column="TASK_DEF_KEY_"          property="taskdefKey"/>
+        <result column="PROC_INST_ID_"           property="procinstId"/>
+        <result column="EXECUTION_ID_"           property="executionId"/>
+        <result column="NAME_"                   property="name"/>
+        <result column="ASSIGNEE_"              property="assignee"/>
+        <result column="START_TIME_"             property="startTime"/>
+        <result column="END_TIME_"               property="endTime"/>
+        <result column="DURATION_"                  property="duration"/>
+        <result column="DELETE_REASON_"             property="deleteReason"/>
+        <result column="OWNER_"             property="owner"/>
+    </resultMap>
+
+    <select id="findAllHisTask" resultMap="ResultMap">
+        SELECT * FROM (SELECT A.*, ROWNUM RN
+        FROM (SELECT * FROM ACT_HI_TASKINST T
+        WHERE T.PRIORITY_ ='50'
+        <include refid="condition-part" />
+        ) A
+        WHERE ROWNUM <![CDATA[<=]]> #{page.offset} + #{page.size}
+        ORDER BY A.START_TIME_ DESC)
+        WHERE RN <![CDATA[>]]> #{page.offset}
+    </select>
+
+    <select id="findAllHisTaskByUserId" resultMap="ResultMap">
+        SELECT * FROM (SELECT A.*, ROWNUM RN
+        FROM (SELECT * FROM ACT_HI_TASKINST T
+        WHERE T.ASSIGNEE_ = #{userId}
+        <include refid="condition-part" />
+        ) A
+        WHERE ROWNUM <![CDATA[<=]]> #{page.offset} + #{page.size}
+        ORDER BY A.START_TIME_ DESC)
+        WHERE RN <![CDATA[>]]> #{page.offset}
+    </select>
+
+    <select id="queryHisTaskTotalByUserId" resultType="java.lang.Long">
+        SELECT COUNT(*) from ACT_HI_TASKINST T
+        WHERE T.ASSIGNEE_ = #{userId}
+        <include refid="condition-part" />
+    </select>
+
+    <select id="queryHisTaskTotal" resultType="java.lang.Long">
+        SELECT COUNT(*) from ACT_HI_TASKINST T
+        WHERE T.PRIORITY_ ='50'
+        <include refid="condition-part" />
+    </select>
+
+    <sql id="condition-part">
+        <if test="terms != null">
+            <if test="terms.assignee != null and terms.assignee != ''">
+                and T.ASSIGNEE_ LIKE '%'||#{terms.assignee}||'%'
+            </if>
+            <if test="terms.startDate != null and terms.startDate != ''">
+                and T.START_TIME_  &gt; to_date(#{terms.startDate},'yyyymmdd hh24:mi:ss')
+            </if>
+            <if test="terms.endDate != null and terms.endDate != ''">
+                and T.START_TIME_  &lt; to_date(#{terms.endDate},'yyyymmdd hh24:mi:ss')
+            </if>
+        </if>
+    </sql>
+</mapper>

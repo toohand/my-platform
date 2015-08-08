@@ -1,0 +1,29 @@
+package ${servicePath};
+
+import com.huge.base.service.BaseServiceImpl;
+import ${packagename}.service.${name}Service;
+import ${packagename}.dao.mapper.${name}Dao;
+import ${packagename}.domain.${name};
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import javax.annotation.PostConstruct;
+
+/**
+* Title: ${title} 业务类
+* Description: ${description}
+* Company: hugeinfo
+* author: ${author}
+* time:${ctime}
+* version 1.0
+*/
+@Service
+public class ${name}ServiceImpl  extends BaseServiceImpl<${name}> implements ${name}Service{
+    @Autowired
+    private ${name}Dao fDao;
+
+    @PostConstruct
+    protected void injectSessionFactory() {
+        super.setBaseDao(fDao);
+    }
+
+}

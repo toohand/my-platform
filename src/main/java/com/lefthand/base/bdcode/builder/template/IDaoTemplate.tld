@@ -1,0 +1,19 @@
+package ${iDaoPath};
+
+
+import com.huge.base.dao.BaseDaoable;
+import ${packagename}.domain.${name};
+import org.springframework.stereotype.Repository;
+
+/**
+ * Title: ${title} 数据库操作接口
+ * Description: ${description}
+ * Company: hugeinfo
+ * author: ${author}
+ * time:${ctime}
+ * version 1.0
+ */
+@Repository
+public interface ${name}Dao extends BaseDaoable<${name}> {
+
+}

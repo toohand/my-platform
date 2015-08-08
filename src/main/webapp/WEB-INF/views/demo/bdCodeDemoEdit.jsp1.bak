@@ -1,0 +1,53 @@
+<%@ page contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib prefix="f" uri="http://www.springframework.org/tags/form" %>
+<body>
+    <div class="easyui-panel" border=false style="padding: 10px 20px">
+		<f:form id="fid" class="easyui-form" method="post" commandName="vo"
+            data-options="novalidate:true" action="${ctx}/bdCodeDemo/save.do">
+		 	    <input type="hidden" name="id" value="${vo.id}"/>
+		 	   <div class="unit" >
+		           <label style="width:60px">名称：</label>
+		           <input class="easyui-textbox" type="text"
+                    name="name" value="${vo.name}"
+                    data-options=" width:'200px'"></input>
+	           </div>
+		 	   <div class="unit" >
+		           <label style="width:60px">描述：</label>
+		           <input class="easyui-textbox" type="text"
+                    name="remark" value="${vo.remark}"
+                    data-options=" width:'200px'"></input>
+	           </div>
+          	<div class="unit" >
+             	<label style="width:60px">性别：</label>
+			 	<f:radiobuttons path="sex" items="${sexs}" delimiter="" />
+	      	</div>
+			<div class="unit" >
+				<label style="width:60px">爱好：</label>
+				<f:checkboxes path="hobby" items="${hobbys}" />
+			</div>
+			<div class="unit" >
+				<label style="width:60px">班级：</label>
+				<f:select path="classes" items="${classess}" class="easyui-combobox" style="width:200px;"/>
+			</div>
+		 	   <div class="unit" >
+		          <label style="width:60px">创建日期：</label>
+ 		          <input type="text" name="cdt" class="easyui-datebox" pattern="yyyy-MM-dd"  value="${vo.cdt}"/>
+	           </div>
+		 	   <div class="unit" >
+		           <label style="width:60px">创建人：</label>
+		           <input class="easyui-textbox" type="text"
+                    name="cdp" value="${vo.cdp}"
+                    data-options=" width:'200px'"></input>
+	           </div>
+		</f:form>
+    <div style="text-align: center; padding: 10px">
+            <a href="javascript:void(0)" class="easyui-linkbutton"
+                iconCls="icon-save" onclick="submitForm('fid','dg','win')">提交</a> <a
+                href="javascript:void(0)" class="easyui-linkbutton"
+                iconCls="icon-cancel" onclick="clearForm('win')">取消</a>
+     </div>
+   </div>
+</body>
+

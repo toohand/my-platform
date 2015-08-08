@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lefthand.attachment.dao.mapper.AttachmentAssociateMapper">
+
+  <sql id="table-name">hg_attachment_associate</sql>
+
+  <insert id="insertBatch">
+    INSERT INTO
+    <include refid="table-name"/>
+    (owner_id, attachment_id, associate_type) VALUES
+    <foreach collection="attachments" item="attachment" separator=",">
+      (
+      #{entityId,                    jdbcType=VARCHAR},
+      #{attachment.id,               jdbcType=VARCHAR},
+      #{attachment.associateType.id, jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+    <insert id="insert">
+        INSERT INTO
+        <include refid="table-name"/>
+        (owner_id, attachment_id, associate_type) VALUES
+        (
+        #{entityId,                    jdbcType=VARCHAR},
+        #{attachment.id,               jdbcType=VARCHAR},
+        #{attachment.associateType.id, jdbcType=VARCHAR}
+        )
+    </insert>
+
+  <delete id="deleteByOwner">
+      DELETE FROM
+      <include refid="table-name"/>
+              WHERE owner_id = #{entityId}
+    </delete>
+
+  <delete id="deleteByOwnerAndAssociate">
+      DELETE FROM
+      <include refid="table-name"/>
+              WHERE owner_id       = #{entityId}
+                AND associate_type = #{associateType.id}
+    </delete>
+
+  <delete id="deleteByAttachment">
+      DELETE FROM
+      <include refid="table-name"/>
+              WHERE attachment_id = #{id}
+    </delete>
+
+  <select id="findByOwner" resultType="java.lang.String">
+        SELECT attachment_id
+          FROM
+          <include refid="table-name"/>
+         WHERE owner_id = #{entityId}
+    </select>
+
+  <select id="findByOwnerAndAssociate" resultType="java.lang.String">
+        SELECT attachment_id
+          FROM
+          <include refid="table-name"/>
+         WHERE owner_id       = #{entityId}
+           AND associate_type = #{associateType.id}
+    </select>
+</mapper>

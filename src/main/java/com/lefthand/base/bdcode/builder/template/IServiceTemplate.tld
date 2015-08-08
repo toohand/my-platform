@@ -1,0 +1,16 @@
+package ${iServicePath};
+
+import com.huge.base.service.BaseServiceable;
+import ${packagename}.domain.${name};
+
+/**
+* Title: ${title} 业务接口类
+* Description: ${description}
+* Company: hugeinfo
+* author: ${author}
+* time:${ctime}
+* version 1.0
+*/
+public interface ${name}Service extends BaseServiceable<${name}> {
+
+}

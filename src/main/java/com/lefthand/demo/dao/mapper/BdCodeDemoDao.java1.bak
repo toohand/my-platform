@@ -1,0 +1,19 @@
+package com.huge.demo.dao.mapper;
+
+
+import com.huge.base.dao.BaseDaoable;
+import com.huge.demo.domain.BdCodeDemo;
+import org.springframework.stereotype.Repository;
+
+/**
+ * Title: 代码生成器Demo 数据库操作接口
+ * Description: 代码生成器Demo
+ * Company: hugeinfo
+ * author: hp
+ * time:2015-06-25 14:49:26
+ * version 1.0
+ */
+@Repository
+public interface BdCodeDemoDao extends BaseDaoable<BdCodeDemo> {
+
+}

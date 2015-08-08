@@ -1,0 +1,206 @@
+html, body {
+    font-family:Tahoma,Helvetica,Arial,'宋体',sans-serif;
+}
+
+.header {
+    position:absolute;
+    width:100%;
+    height:108px;
+    top:0px;
+    left:0px;
+    background:url("../img/header-bg.png");
+}
+.footer {
+    position:absolute;
+    width:100%;
+    height:0px;
+    left:0px;
+    bottom:0px;
+    background-color:#3580D7;
+    clear:both;
+}
+
+.logo {
+    position:absolute;
+    top:4px;
+    left:8px;
+    width:485px;
+    height:75px;
+    background:url("../img/logo.png") no-repeat;
+}
+.banner {
+    float:left;
+    display:inline;
+    width:100%;
+    height:75px;
+    background:url("../img/banner.png");
+}
+
+#tabbar {
+    position:absolute;
+    font-size:12px;
+    line-height:15px;
+    right:0px;
+    bottom:36px;
+}
+#tabbar ul {
+    margin:0;
+    padding:10px 10px 0 50px;
+    list-style:none;
+}
+#tabbar li {
+    display:inline;
+    margin:0;
+    padding:0;
+}
+#tabbar a {
+    float:left;
+    background:url("../img/tableft2.png") no-repeat left top;
+    margin:0;
+    padding:0 0 0 4px;
+    text-decoration:none;
+}
+#tabbar a span {
+    float:left;
+    display:block;
+    background:url("../img/tabright2.png") no-repeat right top;
+    padding:5px 12px 4px 6px;
+    padding:3px 12px 6px 6px;
+    color:#333333;
+}
+#tabbar a:hover {
+    background-position:0% -42px;
+}
+#tabbar a:hover span {
+    background-position:100% -42px;
+}
+#tabbar #current a {
+    background-position:0% -42px;
+}
+#tabbar #current a span {
+    background-position:100% -42px;
+    /*font-weight:bold;*/
+}
+#tabbar li.non-tab a {
+    background:url("../img/blank.png") repeat;
+}
+#tabbar li.non-tab a span {
+    background:url("../img/blank.png") repeat;
+    color:#FFFFFF;
+}
+
+#menubar {
+    position:absolute;
+    width:100%;
+    height:33px;
+    font-size:14px;
+    font-weight:bold;
+    line-height:15px;
+    bottom:3px;
+    background-color:#FFDC66;
+}
+#menubar ul {
+    margin:0;
+    padding:5px 10px 0 10px;
+    list-style:none;
+}
+#menubar li {
+    display:inline;
+    margin:0;
+    padding:0;
+}
+#menubar a {
+    float:left;
+    background:url("../img/tableft1.gif") no-repeat left top;
+    margin:0;
+    padding:0 0 0 4px;
+    text-decoration:none;
+}
+#menubar a span {
+    float:left;
+    display:block;
+    background:url("../img/tabright1.gif") no-repeat right top;
+    padding:3px 12px 6px 6px;
+    color:#333333;
+}
+#menubar a:hover {
+    background-position:0% -24px;
+}
+#menubar a:hover span {
+    background-position:100% -24px;
+    color:#FFFFFF;
+}
+#menubar #current a {
+    background-position:0% -24px;
+}
+#menubar #current a span {
+    background-position:100% -24px;
+    color:#FFFFFF;
+}
+
+#toolbar {
+    position:absolute;
+    top:10px;
+    right:0;
+    height:30px;
+    font-size:12px;
+    line-height:15px;
+}
+#toolbar ul {
+    margin:0;
+    padding:0 10px 0 10px;
+    list-style:none;
+}
+#toolbar li {
+    display:inline;
+    margin:0;
+    padding:0;
+}
+#toolbar a {
+    float:left;
+    background:url("../img/tableft3.png") no-repeat left top;
+    margin:0;
+    padding:0 0 0 4px;
+    text-decoration:none;
+}
+#toolbar a span {
+    float:left;
+    display:block;
+    background:url("../img/tabright3.png") no-repeat right top;
+    padding:3px 12px 6px 4px;
+    color:#333333;
+}
+#toolbar a span i.help {
+    display:block;
+    padding-left:13px;
+    background:url("../img/icon-help.png") no-repeat left;
+}
+#toolbar a span i.settings {
+    display:block;
+    padding-left:14px;
+    background:url("../img/icon-settings.png") no-repeat left;
+}
+#toolbar a span i.logout {
+    display:block;
+    padding-left:15px;
+    background:url("../img/icon-logout.png") no-repeat left;
+}
+#toolbar a:hover {
+    background-position:0% -24px;
+}
+#toolbar a:hover span {
+    background-position:100% -24px;
+}
+#toolbar #current a {
+    background-position:0% -24px;
+}
+#toolbar #current a span {
+    background-position:100% -24px;
+}
+#toolbar li.non-tab a {
+    background:url("../img/blank.png") repeat;
+}
+#toolbar li.non-tab a span {
+    background:url("../img/blank.png") repeat;
+    color:#FFFFFF;
+}

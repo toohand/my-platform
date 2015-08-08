@@ -1,0 +1,29 @@
+package com.huge.demo.service.impl;
+
+import com.huge.base.service.BaseServiceImpl;
+import com.huge.demo.service.BdCodeDemoService;
+import com.huge.demo.dao.mapper.BdCodeDemoDao;
+import com.huge.demo.domain.BdCodeDemo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import javax.annotation.PostConstruct;
+
+/**
+* Title: 代码生成器Demo 业务类
+* Description: 代码生成器Demo
+* Company: hugeinfo
+* author: hp
+* time:2015-06-25 14:49:26
+* version 1.0
+*/
+@Service
+public class BdCodeDemoServiceImpl  extends BaseServiceImpl<BdCodeDemo> implements BdCodeDemoService{
+    @Autowired
+    private BdCodeDemoDao fDao;
+
+    @PostConstruct
+    protected void injectSessionFactory() {
+        super.setBaseDao(fDao);
+    }
+
+}

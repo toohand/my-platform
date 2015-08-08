@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+  Title: 代码生成器Demo 数据库操作
+ * Description: 代码生成器Demo
+ * Company: hugeinfo
+ * author: hp
+ * time:2015-07-16 13:29:06
+ * version 1.0
+-->
+<mapper namespace="com.lefthand.demo.dao.mapper.BdCodeDemoDao">
+    <!-- 结果集 -->
+    <resultMap id="dataResult" type="com.lefthand.demo.domain.BdCodeDemo">
+            <result property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="remark" column="remark"/>
+            <result property="sex" column="sex"/>
+            <result property="hobby" column="hobby"/>
+            <result property="classes" column="classes"/>
+            <result property="cdt" column="cdt"/>
+            <result property="cdp" column="cdp"/>
+    </resultMap>
+
+    <sql id='TABLE_NAME'>HG_SYS_DEMO</sql>
+
+    <sql id="column-part">
+        id,
+        name,
+        remark,
+        sex,
+        hobby,
+        classes,
+        cdt,
+        cdp
+    </sql>
+
+    <sql id="value-part">
+           #{e.id:BIGINT},
+           #{e.name:VARCHAR},
+           #{e.remark:VARCHAR},
+           #{e.sex:INTEGER},
+           #{e.hobby:VARCHAR},
+           #{e.classes:INTEGER},
+           #{e.cdt:TIME},
+           #{e.cdp:VARCHAR}
+    </sql>
+    <sql id="set-part">
+          <if test="e.id != null">id = #{e.id:BIGINT}, </if>
+          <if test="e.name != null">name = #{e.name:VARCHAR}, </if>
+          <if test="e.remark != null">remark = #{e.remark:VARCHAR}, </if>
+          <if test="e.sex != null">sex = #{e.sex:INTEGER}, </if>
+          <if test="e.hobby != null">hobby = #{e.hobby:VARCHAR}, </if>
+          <if test="e.classes != null">classes = #{e.classes:INTEGER}, </if>
+          <if test="e.cdt != null">cdt = #{e.cdt:TIME}, </if>
+          <if test="e.cdp != null">cdp = #{e.cdp:VARCHAR}, </if>
+    </sql>
+    <sql id="where-part">
+         <if test="w.id != null and w.id !=''">and id = #{w.id} </if>
+         <if test="w.name != null and w.name !=''">and name = #{w.name} </if>
+         <if test="w.remark != null and w.remark !=''">and remark = #{w.remark} </if>
+         <if test="w.sex != null and w.sex !=''">and sex = #{w.sex} </if>
+         <if test="w.hobby != null and w.hobby !=''">and hobby = #{w.hobby} </if>
+         <if test="w.classes != null and w.classes !=''">and classes = #{w.classes} </if>
+         <if test="w.cdt != null and w.cdt !=''">and cdt = #{w.cdt} </if>
+         <if test="w.cdp != null and w.cdp !=''">and cdp = #{w.cdp} </if>
+    </sql>
+    <!-- 新增 -->
+    <insert id="insert">
+        <selectKey keyProperty="e.id" resultType="java.lang.Long" order="BEFORE">
+            SELECT MYBATIS_SEQUE.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into
+        <include refid="TABLE_NAME"/>
+        (
+        <include refid="column-part"/>
+        )
+        values
+        (
+        <include refid="value-part"/>
+        )
+    </insert>
+    <!-- 批量新增 -->
+    <insert id="insertBatch" parameterType="List" keyProperty="id">
+        insert into
+        <include refid="TABLE_NAME"/>
+        (
+        <include refid="column-part"/>
+        )
+        select MYBATIS_SEQUE.NEXTVAL,a.* from(
+        <foreach collection="list" item="e" index="index" separator="union all">
+            select
+            <include refid="value-part"/>
+            from dual
+        </foreach>
+        ) a
+    </insert>
+
+    <!-- 更新对象 -->
+    <update id="update">
+        update
+        <include refid="TABLE_NAME"/>
+        <set>
+            <include refid="set-part"/>
+        </set>
+        <where>
+            id = #{e.id}
+        </where>
+    </update>
+    <!-- 条件更新 -->
+    <update id="updateMap">
+        update
+        <include refid="TABLE_NAME"/>
+        <set>
+            <include refid="set-part"/>
+        </set>
+        <where>
+            <include refid="where-part"/>
+        </where>
+    </update>
+
+    <!-- 根据主键删除 -->
+    <delete id="deleteByKey">
+        delete from
+        <include refid="TABLE_NAME"/>
+        where  id = #{key}
+    </delete>
+
+    <!-- 根据条件删除  -->
+    <delete id="delete" >
+        delete from
+        <include refid="TABLE_NAME"/>
+        <where>
+            <include refid="where-part"/>
+        </where>
+    </delete>
+
+    <!-- 批量删除 -->
+    <delete id="deleteBatch">
+        delete from
+        <include refid="TABLE_NAME"/>
+        where id in
+        <foreach item="item" index="object" collection="w" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="fetch" resultMap="dataResult">
+        select * from
+        <include refid="TABLE_NAME"/>
+        <where>
+            id = #{key}
+        </where>
+    </select>
+
+    <!-- 根据条件查询总 -->
+    <select id="count" resultType="long">
+        select count(*) from
+        <include refid="TABLE_NAME"/>
+        <where>
+            <include refid="where-part"/>
+        </where>
+    </select>
+    <!-- 根据条件查询 -->
+    <select id="list" resultMap="dataResult">
+        select * from
+        <include refid="TABLE_NAME"/>
+        <where>
+            <include refid="where-part"/>
+        </where>
+        <if test="sort != null">
+          <foreach collection="sort" item="s" index="index" separator="," open="order by ">
+              ${s.property} ${s.direction}
+          </foreach>
+        </if>
+        <if test="sort == null">
+            order by  id desc
+        </if>
+    </select>
+
+    <select id="page"  resultMap="dataResult">
+        select * from (
+          select temp.*,rownum row_num from(
+            select * FROM
+            <include refid="TABLE_NAME"/>tabl
+            <where>
+                <include refid="where-part"/>
+            </where>
+            <if test="page.sort != null">
+               <foreach collection="page.sort" item="s" index="index" separator="," open="order by ">
+                   ${s.property} ${s.direction}
+               </foreach>
+            </if>
+            <if test="page.sort == null">
+                order by  id desc
+             </if>
+          ) temp
+        ) temp1
+        <where>
+            <![CDATA[ temp1.row_num > #{page.offset} and temp1.row_num <=  #{page.offset} + #{page.size} ]]>
+        </where>
+    </select>
+</mapper> 

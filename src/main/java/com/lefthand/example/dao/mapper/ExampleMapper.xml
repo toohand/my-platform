@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lefthand.example.dao.mapper.ExampleMapper">
+
+    <resultMap id="exampleResultMap" type="com.lefthand.example.domain.Example">
+        <result column="id"             property="id"/>
+        <result column="name"           property="name"/>
+        <result column="gender"         property="gender"/>
+    </resultMap>
+
+    <sql id="table-name">example</sql>
+    <sql id="column-part">
+        id,
+        name,
+        gender
+    </sql>
+    <sql id="if-part">
+        <if test="terms != null">
+            <where>
+                name = #{terms.name,jdbcType=VARCHAR}
+            </where>
+        </if>
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO
+        <include refid="table-name" />
+        (
+            id,
+            name,
+            gender
+        ) VALUES (
+            #{example.id,               jdbcType=VARCHAR  },
+            #{example.name,             jdbcType=VARCHAR  },
+            #{example.gender,           jdbcType=BOOLEAN  }
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE
+        <include refid="table-name" />
+        SET name         = #{example.name,            jdbcType=VARCHAR  },
+            gender       = #{example.gender,          jdbcType=BOOLEAN  }
+        WHERE id = #{example.id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM
+        <include refid="table-name" />
+        WHERE id = #{id}
+    </delete>
+
+    <select id="find" resultMap="exampleResultMap">
+        SELECT
+        <include refid="column-part"/>
+        FROM
+        <include refid="table-name" />
+        WHERE id = #{id}
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM
+        <include refid="table-name" />
+        <include refid="if-part"/>
+    </select>
+
+    <select id="queryByPage" resultMap="exampleResultMap">
+        SELECT
+        <include refid="column-part"/>
+        FROM
+        <include refid="table-name" />
+        <include refid="if-part"/>
+        ORDER BY update_time DESC,
+        create_time DESC
+        LIMIT #{page.offset}, #{page.size}
+    </select>
+
+    <select id="findByAll" resultMap="exampleResultMap">
+        SELECT
+        <include refid="column-part"/>
+        FROM
+        <include refid="table-name" />
+        <include refid="if-part"/>
+        ORDER BY update_time DESC,
+        create_time DESC
+    </select>
+
+</mapper>

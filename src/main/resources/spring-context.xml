@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		    http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+       default-lazy-init="true">
+    <!-- Spring扩展配置, 包括变量引入/activemq/工作流/mongodb/等等 -->
+    <import resource="spring-extend.xml"/>
+    <!-- 环境 -->
+    <util:properties id="properties" location="classpath:application.properties"/>
+    <context:property-placeholder ignore-resource-not-found="true" location="classpath*:/application.properties"/>
+    <!-- 使用annotation自动注册bean, 并保证@Required/@Autowired的属性被注入 -->
+    <context:component-scan base-package="com.huge">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+    <bean class="com.lefthand.comm.context.ApplicationContextHolder"   lazy-init="false"/>
+    <bean class="com.lefthand.comm.context.SystemContextHolder"        lazy-init="false"/>
+    <!-- 数据源配置, 使用应用内的DBCP数据库连接池 -->
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+        <property name="driverClassName"   value="${jdbc.driver}"/>
+        <property name="url"               value="${jdbc.url}"/>
+        <property name="username"          value="${jdbc.username}"/>
+        <property name="password"          value="${jdbc.password}"/>
+        <property name="maxActive"         value="${jdbc.pool.maxActive}"/>
+        <property name="maxIdle"           value="${jdbc.pool.maxIdle}"/>
+        <property name="minIdle"           value="0"/>
+        <property name="defaultAutoCommit" value="false"/>
+        <property name="validationQuery"  value="select 1"/>
+        <property name="testWhileIdle" value="true"/>
+        <!-- 连接Idle10分钟后超时，每1分钟检查一次 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <property name="minEvictableIdleTimeMillis" value="600000"/>
+    </bean>
+    <!-- MyBatis配置 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:/mybatis/config.xml"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="annotationClass" value="org.springframework.stereotype.Repository"/>
+        <property name="basePackage" value="com.huge.**.dao.mapper"/>
+    </bean>
+    <!-- 事务管理器配置, JDBC事务配置 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 使用annotation定义事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    <!-- 定义aspectj -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+</beans>

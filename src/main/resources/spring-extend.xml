@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <description>导入系统中的applicationContext文件列表</description>
+
+    <!--webservice 配置-->
+    <import resource="spring-webservice.xml" />
+    <!--应用常量配置-->
+    <import resource="spring-util.xml" />
+    <!--mongodb 配置-->
+    <import resource="spring-mongo.xml" />
+    <!--JMS配置-->
+    <import resource="spring-activemq.xml" />
+    <!--activiti工作流配置-->
+    <import resource="activiti.cfg.xml" />
+    <!--ehcache 配置-->
+	<!-- <import resource="cache/applicationContext-ehcache.xml" /> -->
+
+    <!--email 配置-->
+	<!-- <import resource="email/applicationContext-email.xml" /> -->
+
+    <!--quartz 配置-->
+	<!-- <import resource="schedule/applicationContext-quartz.xml" /> -->
+
+</beans>

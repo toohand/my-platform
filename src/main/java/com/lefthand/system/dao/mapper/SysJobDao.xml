@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lefthand.system.dao.mapper.SysJobDao">
+    <!-- 结果集 -->
+    <resultMap id="sysJobResult" type="com.lefthand.system.domain.SysJob">
+        <id property="id" column="id"/>
+        <result property="jobName" column="job_name"/>
+        <result property="jobState" column="job_state"/>
+        <result property="jobTrigger" column="job_trigger"/>
+        <result property="jobGroup" column="job_group"/>
+        <result property="taskId" column="task_id"/>
+        <result property="taskType" column="task_type"/>
+        <result property="taskClass" column="task_class"/>
+        <result property="jobState" column="job_state"/>
+        <result property="cronExpression" column="cron_expression"/>
+        <result property="startTime" column="start_time"/>
+        <result property="stopTime" column="stop_time"/>
+        <result property="createDate" column="create_date"/>
+    </resultMap>
+
+    <sql id='TABLE_NAME'>HG_SYS_JOB</sql>
+
+    <sql id="column-part">
+         id, job_name, job_state,job_trigger,job_group,task_id,task_type,task_class,cron_expression,start_time,stop_time,create_date
+    </sql>
+
+    <sql id="value-part">
+         #{e.jobName:VARCHAR}, #{e.jobState:INTEGER},#{e.jobTrigger:VARCHAR},#{e.jobGroup:VARCHAR},#{e.taskId:BIGINT},#{e.taskType:INTEGER},#{e.taskClass:VARCHAR},
+         #{e.cronExpression:VARCHAR},#{e.startTime:DATE},#{e.stopTime:DATE},#{e.createDate:TIME}
+    </sql>
+    <sql id="set-part">
+        <if test="e.jobName != null">job_name = #{e.jobName:VARCHAR},</if>
+        <if test="e.taskClass != null">task_class = #{e.taskClass:VARCHAR},</if>
+        <if test="e.jobState != null">job_state= #{e.jobState:INTEGER},</if>
+        <if test="e.jobTrigger != null">job_trigger = #{e.jobTrigger:VARCHAR},</if>
+        <if test="e.jobGroup != null">job_group = #{e.jobGroup:VARCHAR},</if>
+    </sql>
+    <sql id="where-part">
+        <if test="w.id != null">and id = #{w.id}</if>
+        <if test="w.jobName != null">and job_name = #{w.jobName}</if>
+        <if test="w.jobState != null">and job_state= #{w.jobState}</if>
+        <if test="w.jobTrigger != null">and job_trigger = #{w.jobTrigger}</if>
+        <if test="w.jobGroup != null">and job_group = #{w.jobGroup}</if>
+        <if test="w.conditions != null"> and (job_name like CONCAT(CONCAT('%', #{w.conditions}), '%')
+            or  job_group like CONCAT(CONCAT('%', #{w.conditions}), '%')
+            or  task_class like CONCAT(CONCAT('%', #{w.conditions}), '%')
+            or  cron_expression like CONCAT(CONCAT('%', #{w.conditions}), '%'))
+        </if>
+
+    </sql>
+    <!-- 新增对象 -->
+    <insert id="insert">
+        <selectKey keyProperty="e.id" resultType="java.lang.Long" order="BEFORE">
+            SELECT MYBATIS_SEQUE.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into
+        <include refid="TABLE_NAME"/>
+        (
+        <include refid="column-part"/>
+        )
+        values
+        (
+        #{e.id},
+        <include refid="value-part"/>
+        )
+    </insert>
+    <!-- 批量新增 -->
+    <insert id="insertBatch" parameterType="List" keyProperty="id">
+        insert into
+        <include refid="TABLE_NAME"/>
+        (
+        <include refid="column-part"/>
+        )
+        select MYBATIS_SEQUE.NEXTVAL,a.* from(
+        <foreach collection="list" item="e" index="index" separator="union all">
+            select
+            <include refid="value-part"/>
+            from dual
+        </foreach>
+        ) a
+    </insert>
+
+    <!-- 更新对象 -->
+    <update id="update">
+        update
+        <include refid="TABLE_NAME"/>
+        <set>
+            <include refid="set-part"/>
+        </set>
+        <where>
+            id = #{e.id}
+        </where>
+    </update>
+    <!-- 条件更新 -->
+    <update id="updateMap">
+        update
+        <include refid="TABLE_NAME"/>
+        <set>
+            <include refid="set-part"/>
+        </set>
+        <where>
+            <include refid="where-part"/>
+        </where>
+    </update>
+
+    <!-- 根据主键删除 -->
+    <delete id="deleteByKey">
+        delete from
+        <include refid="TABLE_NAME"/>
+        where id = #{key}
+    </delete>
+
+    <!-- 根据条件删除  -->
+    <delete id="delete" >
+        delete from
+        <include refid="TABLE_NAME"/>
+        <where>
+            <include refid="where-part"/>
+        </where>
+    </delete>
+
+    <!-- 批量删除 -->
+    <delete id="deleteBatch">
+        delete from
+        <include refid="TABLE_NAME"/>
+        where id in
+        <foreach item="item" index="object" collection="w" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="fetch" resultMap="sysJobResult">
+        select * from
+        <include refid="TABLE_NAME"/>
+        <where>
+            id = #{key}
+        </where>
+    </select>
+
+    <!-- 根据条件查询总 -->
+    <select id="count" resultType="long">
+        select count(*) from
+        <include refid="TABLE_NAME"/>
+        <where>
+            <include refid="where-part"/>
+        </where>
+    </select>
+    <!-- 根据条件查询 -->
+    <select id="list" resultMap="sysJobResult">
+        select * from
+        <include refid="TABLE_NAME"/>
+        <where>
+            <include refid="where-part"/>
+        </where>
+        <if test="sort != null">
+          <foreach collection="sort" item="s" index="index" separator="," open="order by ">
+              ${s.property} ${s.direction}
+          </foreach>
+        </if>
+        <if test="sort == null">
+            order by  id desc
+        </if>
+    </select>
+
+    <select id="page"  resultMap="sysJobResult">
+        select * from (
+          select temp.*,rownum row_num from(
+            select * FROM
+            <include refid="TABLE_NAME"/>tabl
+            <where>
+                <include refid="where-part"/>
+            </where>
+            <if test="page.sort != null">
+               <foreach collection="page.sort" item="s" index="index" separator="," open="order by ">
+                  ${s.property} ${s.direction}
+               </foreach>
+            </if>
+            <if test="page.sort == null">
+                order by  id desc
+             </if>
+          ) temp
+        ) temp1
+        <where>
+            <![CDATA[ temp1.row_num > #{page.offset} and temp1.row_num <=  #{page.offset} + #{page.size} ]]>
+        </where>
+    </select>
+
+</mapper> 

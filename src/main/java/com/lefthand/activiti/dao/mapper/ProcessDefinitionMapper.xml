@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lefthand.activiti.dao.mapper.ProcessDefinitionMapper">
+
+    <resultMap id="ResultMap" type="com.lefthand.activiti.domain.MyProcessDefinition">
+        <result column="ID_"             property="id"/>
+        <result column="NAME_"               property="name"/>
+        <result column="KEY_"           property="key"/>
+        <result column="VERSION_"              property="version"/>
+        <result column="DEPLOYMENT_ID_"           property="deploymentId"/>
+        <result column="RESOURCE_NAME_"        property="resourceName"/>
+        <result column="DGRM_RESOURCE_NAME_"        property="diagramResourceName"/>
+        <result column="SUSPENSION_STATE_"              property="suspension"/>
+        <result column="CATEGORY_"              property="category"/>
+        <association property="deployment" javaType="com.lefthand.activiti.domain.MyDeployment">
+            <result property="name" column="depName"/>
+            <result property="deploymentTime" column="DEPLOY_TIME_"/>
+        </association>
+
+    </resultMap>
+
+    <select id="findAllProcessDefinition" resultMap="ResultMap">
+        select * from (
+        select t1.deploy_time_,t1.name_ depName,t.* ,rownum rn
+        from act_re_procdef t,act_re_deployment t1
+        where t.deployment_id_=t1.id_
+        <include refid="condition-part" />
+        and rownum <![CDATA[<=]]> #{page.offset} + #{page.size}
+        ORDER BY t.version_ asc)s
+        where s.rn <![CDATA[>]]> #{page.offset}
+    </select>
+
+    <select id="queryProcessDefinitionTotal" resultType="java.lang.Long">
+        SELECT COUNT(t.id_) from act_re_procdef t,act_re_deployment t1
+        where t.deployment_id_ = t1.id_
+        <include refid="condition-part" />
+    </select>
+
+    <sql id="condition-part">
+        <if test="terms != null">
+            <if test="terms.key != null and terms.key != ''">
+                and t.key_ = #{terms.key}
+            </if>
+            <if test="terms.startDate != null and terms.startDate != ''">
+                and t1.deploy_time_  &gt; to_date(#{terms.startDate},'yyyymmdd hh24:mi:ss')
+            </if>
+            <if test="terms.endDate != null and terms.endDate != ''">
+                and t1.deploy_time_  &lt; to_date(#{terms.endDate},'yyyymmdd hh24:mi:ss')
+            </if>
+        </if>
+    </sql>
+
+</mapper>

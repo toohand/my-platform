@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mock>
+    <unit name="系统维护部">
+        <post id="2473"
+              name="主任助理"
+              account="hzq"
+              username="黄章群"
+              department="行政部"/>
+    </unit>
+    <unit name="恒巨科技">
+        <post id="49357"
+              name="java工程师"
+              account="wangmz"
+              username="王敏钊"
+              department="研发部"/>
+        <post id="49387"
+              name="java工程师"
+              account="mars"
+              username="马润升"
+              department="研发部"/>
+        <post id="49353"
+              name="总工程师"
+              account="suzx"
+              username="苏志雄"
+              department="董事会"/>
+        <post id="49351"
+              name="总经理"
+              account="fangq"
+              username="方清"
+              department="董事会"/>
+    </unit>
+</mock>

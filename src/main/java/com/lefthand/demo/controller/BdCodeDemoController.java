@@ -1,0 +1,138 @@
+package com.lefthand.demo.controller;
+
+import com.lefthand.base.comm.Constant;
+import com.lefthand.base.comm.JSONUtil;
+import com.lefthand.comm.web.Servlets;
+import com.lefthand.base.controller.BaseController;
+import com.lefthand.demo.domain.BdCodeDemo;
+import net.sf.json.JSONObject;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.lefthand.demo.service.BdCodeDemoService;
+
+/**
+ * Title: 代码生成器Demo  SpringMVC控制类
+ * Description: 代码生成器Demo
+ * Company: hugeinfo
+ * author: hp
+ * time:2015-07-16 13:29:06
+ * version 1.0
+ */
+@Controller
+@RequestMapping(value = "/bdCodeDemo")
+public class BdCodeDemoController extends BaseController {
+
+    private static org.slf4j.Logger log = LoggerFactory.getLogger(BdCodeDemoController.class);
+    @Autowired
+    private BdCodeDemoService fService;
+    @Autowired(required=false)
+    private HttpServletRequest request;
+
+    //加载浏览页面
+    @RequestMapping(value = "/load.do")
+    public String load(ModelMap model) {
+        return "demo/bdCodeDemo" ;
+    }
+    //加载新增或编辑页面
+    @RequestMapping(value = "/show.do")
+    public String show(Long id ,ModelMap model) {
+        try{
+           if ( id != null && id != 0){
+               BdCodeDemo vo = fService.fetch(id);
+               model.put("vo",vo);
+            }
+            return "demo/bdCodeDemoEdit" ;
+        }catch(Exception e){
+            log.error(e.getMessage(), e);
+            model.put("ex",e);
+            return "error/500.jsp";
+        }
+    }
+
+    @RequestMapping(value = "/query.do")
+    @ResponseBody
+    public String query(int page, int rows) {
+        BdCodeDemo vo = new BdCodeDemo();
+        try {
+            Map m = Servlets.getParametersStartingWith(request, "w.");
+            PageRequest p = new PageRequest(page-1, rows, null);
+            long total = fService.count(m);
+            List<BdCodeDemo> list = fService.page(m, p);
+            Map data = new HashMap();
+            data.put("total",total);
+            data.put("rows", list);
+            return JSONUtil.map2JsonStr(data, null);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return "" ;
+    }
+
+    @RequestMapping(value = "/save.do")
+    @ResponseBody
+    public String save(BdCodeDemo vo) {
+        JSONObject json = new JSONObject();
+        try {
+            if (null == vo.getId() || 0 == vo.getId()) {
+                fService.insert(vo);
+            } else {
+                fService.update(vo);
+            }
+            json.put(Constant.STATUS_CODE, Constant.STATUS_SUCC);
+            json.put(Constant.STATUS_MESSAGE, "保存成功");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            json.put(Constant.STATUS_CODE, Constant.STATUS_FAIL);
+            json.put(Constant.STATUS_MESSAGE, "保存失败");
+        }
+        return json.toString();
+    }
+
+    @RequestMapping(value = "/delete.do")
+    @ResponseBody
+    public String delete(Long id) {
+        JSONObject json = new JSONObject();
+        try {
+            if ( id != 0) {
+                fService.delete(id);
+                json.put(Constant.STATUS_CODE, Constant.STATUS_SUCC);
+                json.put(Constant.STATUS_MESSAGE, "删除成功");
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            json.put(Constant.STATUS_CODE, Constant.STATUS_FAIL);
+            json.put(Constant.STATUS_MESSAGE, "删除成功");
+        }
+        return json.toString();
+    }
+
+    @RequestMapping(value = "/deleteBatch.do")
+    @ResponseBody
+    public String delete(String  ids) {
+        JSONObject json = new JSONObject();
+        try {
+            if (!"".equals(ids) ) {
+                String[] params = ids.split(",");
+                fService.deleteBatch(params);
+                json.put(Constant.STATUS_CODE, Constant.STATUS_SUCC);
+                json.put(Constant.STATUS_MESSAGE, "删除成功");
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            json.put(Constant.STATUS_CODE, Constant.STATUS_FAIL);
+            json.put(Constant.STATUS_MESSAGE, "删除成功");
+        }
+        return json.toString();
+    }
+
+}

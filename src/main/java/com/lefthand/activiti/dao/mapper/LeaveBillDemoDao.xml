@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+  Title: 请假流程Demo 数据库操作
+ * Description: 请假流程Demo
+ * Company: hugeinfo
+ * author: hp
+ * time:2015-07-02 16:29:44
+ * version 1.0
+-->
+<mapper namespace="com.lefthand.activiti.dao.mapper.LeaveBillDemoDao">
+    <!-- 结果集 -->
+    <resultMap id="dataResult" type="com.lefthand.activititest.domain.LeaveBillDemo">
+            <result property="id" column="id"/>
+            <result property="loginName" column="log_name"/>
+            <result property="postName" column="post_name"/>
+            <result property="day" column="day"/>
+            <result property="leaveType" column="leave_type"/>
+            <result property="state" column="state"/>
+            <result property="content" column="content"/>
+            <result property="createTime" column="create_time"/>
+            <result property="updateTime" column="update_time"/>
+            <result property="startTime" column="start_time"/>
+            <result property="endTime" column="end_time"/>
+            <result property="userId" column="user_id"/>
+    </resultMap>
+
+    <sql id='TABLE_NAME'>HG_LEAVE_BILL_DEMO</sql>
+
+    <sql id="column-part">
+        id,
+        log_name,
+        post_name,
+        day,
+        leave_type,
+        state,
+        content,
+        create_time,
+        update_time,
+        start_time,
+        end_time,
+        user_id
+    </sql>
+
+    <sql id="value-part">
+           #{e.id:BIGINT},
+           #{e.loginName:VARCHAR},
+           #{e.postName:VARCHAR},
+           #{e.day:DOUBLE},
+           #{e.leaveType:INTEGER},
+           #{e.state:INTEGER},
+           #{e.content:VARCHAR},
+           #{e.createTime:TIME},
+           #{e.updateTime:TIME},
+           #{e.startTime:TIME},
+           #{e.endTime:TIME},
+           #{e.userId:VARCHAR}
+    </sql>
+    <sql id="set-part">
+          <if test="e.id != null">id = #{e.id:BIGINT}, </if>
+          <if test="e.loginName != null">log_name = #{e.loginName:VARCHAR}, </if>
+          <if test="e.postName != null">post_name = #{e.postName:VARCHAR}, </if>
+          <if test="e.day != null">day = #{e.day:DOUBLE}, </if>
+          <if test="e.leaveType != null">leave_type = #{e.leaveType:INTEGER}, </if>
+          <if test="e.state != null">state = #{e.state:INTEGER}, </if>
+          <if test="e.content != null">content = #{e.content:VARCHAR}, </if>
+          <if test="e.createTime != null">create_time = #{e.createTime:TIME}, </if>
+          <if test="e.updateTime != null">update_time = #{e.updateTime:TIME}, </if>
+          <if test="e.startTime != null">start_time = #{e.startTime:TIME}, </if>
+          <if test="e.endTime != null">end_time = #{e.endTime:TIME}, </if>
+          <if test="e.userId != null">user_id = #{e.userId:VARCHAR}, </if>
+    </sql>
+    <sql id="where-part">
+         <if test="w.id != null and w.id !=''">and id = #{w.id} </if>
+         <if test="w.loginName != null and w.loginName !=''">and log_name = #{w.loginName} </if>
+         <if test="w.postName != null and w.postName !=''">and post_name = #{w.postName} </if>
+         <if test="w.day != null and w.day !=''">and day = #{w.day} </if>
+         <if test="w.leaveType != null and w.leaveType !=''">and leave_type = #{w.leaveType} </if>
+         <if test="w.state != null and w.state !=''">and state = #{w.state} </if>
+         <if test="w.content != null and w.content !=''">and content = #{w.content} </if>
+         <if test="w.createTime != null and w.createTime !=''">and create_time = #{w.createTime} </if>
+         <if test="w.updateTime != null and w.updateTime !=''">and update_time = #{w.updateTime} </if>
+         <if test="w.startTime != null and w.startTime !=''">and start_time = #{w.startTime} </if>
+         <if test="w.endTime != null and w.endTime !=''">and end_time = #{w.endTime} </if>
+         <if test="w.userId != null and w.userId !=''">and user_id = #{w.userId} </if>
+    </sql>
+    <!-- 新增 -->
+    <insert id="insert">
+        <selectKey keyProperty="e.id" resultType="java.lang.Long" order="BEFORE">
+            SELECT MYBATIS_SEQUE.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into
+        <include refid="TABLE_NAME"/>
+        (
+        <include refid="column-part"/>
+        )
+        values
+        (
+        <include refid="value-part"/>
+        )
+    </insert>
+    <!-- 批量新增 -->
+    <insert id="insertBatch" parameterType="List" keyProperty="id">
+        insert into
+        <include refid="TABLE_NAME"/>
+        (
+        <include refid="column-part"/>
+        )
+        select MYBATIS_SEQUE.NEXTVAL,a.* from(
+        <foreach collection="list" item="e" index="index" separator="union all">
+            select
+            <include refid="value-part"/>
+            from dual
+        </foreach>
+        ) a
+    </insert>
+
+    <!-- 更新对象 -->
+    <update id="update">
+        update
+        <include refid="TABLE_NAME"/>
+        <set>
+            <include refid="set-part"/>
+        </set>
+        <where>
+            id = #{e.id}
+        </where>
+    </update>
+    <!-- 条件更新 -->
+    <update id="updateMap">
+        update
+        <include refid="TABLE_NAME"/>
+        <set>
+            <include refid="set-part"/>
+        </set>
+        <where>
+            <include refid="where-part"/>
+        </where>
+    </update>
+
+    <!-- 根据主键删除 -->
+    <delete id="deleteByKey">
+        delete from
+        <include refid="TABLE_NAME"/>
+        where  id = #{key}
+    </delete>
+
+    <!-- 根据条件删除  -->
+    <delete id="delete" >
+        delete from
+        <include refid="TABLE_NAME"/>
+        <where>
+            <include refid="where-part"/>
+        </where>
+    </delete>
+
+    <!-- 批量删除 -->
+    <delete id="deleteBatch">
+        delete from
+        <include refid="TABLE_NAME"/>
+        where id in
+        <foreach item="item" index="object" collection="w" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="fetch" resultMap="dataResult">
+        select * from
+        <include refid="TABLE_NAME"/>
+        <where>
+            id = #{key}
+        </where>
+    </select>
+
+    <!-- 根据条件查询总 -->
+    <select id="count" resultType="long">
+        select count(*) from
+        <include refid="TABLE_NAME"/>
+        <where>
+            <include refid="where-part"/>
+        </where>
+    </select>
+    <!-- 根据条件查询 -->
+    <select id="list" resultMap="dataResult">
+        select * from
+        <include refid="TABLE_NAME"/>
+        <where>
+            <include refid="where-part"/>
+        </where>
+        <if test="sort != null">
+          <foreach collection="sort" item="s" index="index" separator="," open="order by ">
+              ${s.property} ${s.direction}
+          </foreach>
+        </if>
+        <if test="sort == null">
+            order by  id desc
+        </if>
+    </select>
+
+    <select id="page"  resultMap="dataResult">
+        select * from (
+          select temp.*,rownum row_num from(
+            select * FROM
+            <include refid="TABLE_NAME"/>tabl
+            <where>
+                <include refid="where-part"/>
+            </where>
+            <if test="page.sort != null">
+               <foreach collection="page.sort" item="s" index="index" separator="," open="order by ">
+                   ${s.property} ${s.direction}
+               </foreach>
+            </if>
+            <if test="page.sort == null">
+                order by  id desc
+             </if>
+          ) temp
+        ) temp1
+        <where>
+            <![CDATA[ temp1.row_num > #{page.offset} and temp1.row_num <=  #{page.offset} + #{page.size} ]]>
+        </where>
+    </select>
+</mapper> 

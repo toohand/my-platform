@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lefthand.activiti.dao.mapper.HisProcinstMapper">
+    <resultMap id="ResultMap" type="com.lefthand.activiti.domain.HisProcinst">
+        <result column="ID_"                    property="id"/>
+        <result column="PROC_INST_ID_"          property="procinstId"/>
+        <result column="BUSINESS_KEY_"          property="bussinessKey"/>
+        <result column="PROC_DEF_ID_"           property="procdefId"/>
+        <result column="START_TIME_"            property="startTime"/>
+        <result column="END_TIME_"              property="endTime"/>
+        <result column="START_ACT_ID_"          property="startActId"/>
+    </resultMap>
+
+    <select id="findAllHisProcinst" resultMap="ResultMap">
+        select * from (
+        select t.* ,rownum rn
+        from act_hi_procinst t,act_re_procdef t1
+        where t.PROC_DEF_ID_=t1.id_
+        <include refid="condition-part" />
+        and rownum <![CDATA[<=]]> #{page.offset} + #{page.size}
+        ORDER BY t.START_TIME_ desc)s
+        where s.rn <![CDATA[>]]> #{page.offset}
+    </select>
+
+    <select id="queryHisProcinstTotal" resultType="java.lang.Long">
+        SELECT COUNT(t.id_) from act_hi_procinst t,act_re_procdef t1
+        where t.PROC_DEF_ID_=t1.id_
+        <include refid="condition-part" />
+    </select>
+
+    <sql id="condition-part">
+        <if test="terms != null">
+            <if test="terms.procinstId != null and terms.procinstId != ''">
+                and t.PROC_INST_ID_ LIKE '%'||#{terms.procinstId}||'%'
+            </if>
+            <if test="terms.startDate != null and terms.startDate != ''">
+                and t.START_TIME_  &gt; to_date(#{terms.startDate},'yyyymmdd hh24:mi:ss')
+            </if>
+            <if test="terms.endDate != null and terms.endDate != ''">
+                and t.START_TIME_  &lt; to_date(#{terms.endDate},'yyyymmdd hh24:mi:ss')
+            </if>
+        </if>
+    </sql>
+</mapper>

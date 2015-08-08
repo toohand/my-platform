@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- 单独运行的流程引擎 -->
+	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 如果没使用默认的H2数据库就必须设置这项 -->
+		<property name="databaseType" value="oracle"></property>
+		<!-- true: 构建流程引擎时，执行检查，如果需要就执行更新。 如果表不存在，就创建 -->
+		<property name="databaseSchemaUpdate" value="true"></property>
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="jobExecutorActivate" value="false" />
+		<property name="history" value="audit" />
+		<!--所有流程定义都被缓存了（解析之后）避免每次使用前都要访问数据库， 因为流程定义数据是不会改变的。 默认，不会限制这个缓存。如果想限制流程定义缓存，可以添加如下配置 
+			none: 忽略所有历史存档。这是流程执行时性能最好的状态，但没有任何历史信息可用。 activity: 保存所有流程实例信息和活动实例信息。 在流程实例结束时, 
+			最后一个流程实例中的最新的变量值将赋值给历史变量。 不会保存过程中的详细信息。 audit: 这个是默认值. 它保存所有流程实例信息, 活动信息, 
+			保证所有的变量和提交的表单属性保持同步 这样所有用户交互信息都是可追溯的，可以用来审计。 full: 这个是最高级别的历史信息存档，同样也是最慢的。 
+			这个级别存储发生在审核以及所有其它细节的信息, 主要是更新流程变量。 -->
+		<property name="processDefinitionCacheLimit" value="10" />
+		<property name="activityFontName" value="宋体" /><!-- 解决中文乱码 -->
+		<property name="labelFontName" value="宋体" />
+	</bean>
+
+	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
+	</bean>
+
+	<!--<bean id="activitiRule" class="org.activiti.engine.test.ActivitiRule">-->
+		<!--<property name="processEngine" ref="processEngine" />-->
+	<!--</bean>-->
+
+    <!--注册服务bean-->
+	<bean id="repositoryService" factory-bean="processEngine"
+		  factory-method="getRepositoryService" />
+	<bean id="runtimeService" factory-bean="processEngine"
+		  factory-method="getRuntimeService" />
+	<bean id="taskService" factory-bean="processEngine"
+          factory-method="getTaskService" />
+	<bean id="historyService" factory-bean="processEngine"
+		  factory-method="getHistoryService" />
+	<bean id="managementService" factory-bean="processEngine"
+		  factory-method="getManagementService" />
+	<bean id="identityService" factory-bean="processEngine"
+          factory-method="getIdentityService"></bean>
+	<bean id="formService" factory-bean="processEngine"
+		  factory-method="getFormService"></bean>
+
+</beans>
